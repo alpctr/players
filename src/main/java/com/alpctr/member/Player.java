@@ -1,23 +1,15 @@
 package com.alpctr.member;
 
-import java.time.LocalDateTime;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.alpctr.data.MessageData;
-import com.alpctr.players.DataBus;
 import com.alpctr.players.DataType;
 import com.alpctr.players.Member;
-import com.alpctr.players.Subscribable;
 
 public class Player implements Member {
 
 	private String name;
-	private String message;
-	private LocalDateTime started;
-	private LocalDateTime stopped;
 
-	private final AtomicReference<DataBus> bus = new AtomicReference<>();
 	private final AtomicInteger sendCounter = new AtomicInteger();
 	//private final AtomicInteger receiveCounter = new AtomicInteger();
 
@@ -28,19 +20,29 @@ public class Player implements Member {
 	
 	@Override
 	public void accept(DataType data) {
-		handleEvent((MessageData) data);
+		Executor executor = Executor.getInstance();
+		
+		executor.getExecutor().execute(() -> {
+			handleEvent((MessageData) data);
+			});
+		
 	}
 
 	private void handleEvent(MessageData data) {
 		String message;
+		String delimiter = "|";
 		int sendCount;
 		message = data.getMessage();
+		StringBuilder sb = new StringBuilder();
 		
 		sendCount = sendCounter.incrementAndGet();
 		
-		String newMessage = message + "|" + sendCount;
+		sb.append(message);
+		sb.append(delimiter);
+		sb.append(sendCount);
+		String newMessage = sb.toString();
 		
-		System.out.println(String.format("Received message: %s in %s", message, name));
+		System.out.println(String.format("Received message: %s in %s with thread %d", message, name, Thread.currentThread().getId()));
 		data.getDataBus().publish(MessageData.of(newMessage), this);
 		System.out.println(String.format("Sent message: %s in %s", newMessage, name));
 	}

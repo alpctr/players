@@ -48,13 +48,8 @@ public class DataBus {
 	    Predicate<Member> predicate = (member) -> member.equals(sender);
 		
         Set<Member> listeners = this.listeners.stream()
-                .filter(x -> predicate.negate().test(x))
-                .collect(Collectors.toSet());
-        
-        
-        /*Set<Member> listeners2 = this.listeners.stream()
                 .filter(predicate.negate()::test)
-                .collect(Collectors.toSet());*/
+                .collect(Collectors.toSet());
         
         
         //listeners.iterator().next().accept(event);
