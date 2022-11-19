@@ -62,6 +62,8 @@ class App {
 		System.out.println("\n");
 		initiator.send(StartingData.of(LocalDateTime.now(), "Nice game..."), bus);
 		System.out.println(String.format("Game finished"));
+		bus.unsubscribe(player1);
+		bus.unsubscribe(player2);
 		exit(0);
 	}
 }

@@ -12,7 +12,6 @@ public class MessageData extends AbstractDataType {
 	private final String message;
 
 	public MessageData(String message) {
-		super();
 		this.message = message;
 	}
 

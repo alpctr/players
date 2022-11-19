@@ -99,7 +99,6 @@ public class Player implements Member {
 				Thread.currentThread().getId()));
 
 		if (latch.getCount() == 0) {
-			data.getDataBus().unsubscribe(this);
 			return;
 		}
 
@@ -107,10 +106,6 @@ public class Player implements Member {
 		System.out.println(String.format("Sent message: %s in %s", concatenatedMessage, name));
 
 		latch.countDown();
-
-		if (sendCount > MAX_SEND_COUNT) {
-			data.getDataBus().unsubscribe(this);
-		}
 	}
 
 	public String getName() {
