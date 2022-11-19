@@ -12,8 +12,7 @@ public class Player implements Member {
 	private String name;
 	private CountDownLatch latch;
 
-	private final AtomicInteger sendCounter = new AtomicInteger();
-	//private final AtomicInteger receiveCounter = new AtomicInteger();
+	private AtomicInteger sendCounter = new AtomicInteger(0);
 
 	public Player(String name) {
 		super();
@@ -23,10 +22,7 @@ public class Player implements Member {
 	@Override
 	public void accept(DataType data) {
 		Executor executor = Executor.getInstance();
-		if (latch.getCount() == 0) {
-			return;
-		}
-		
+
 		executor.getExecutor().execute(() -> {
 			handleEvent((MessageData) data);
 			});
@@ -36,20 +32,25 @@ public class Player implements Member {
 	private void handleEvent(MessageData data) {
 		String message;
 		String delimiter = "|";
-		int sendCount;
+		int sendCount = 0;
 		message = data.getMessage();
 		StringBuilder sb = new StringBuilder();
 		
-		sendCount = sendCounter.incrementAndGet();
-		
+		sendCount = sendCounter.getAndIncrement();
 		sb.append(message);
 		sb.append(delimiter);
 		sb.append(sendCount);
 		String newMessage = sb.toString();
 		
 		System.out.println(String.format("Received message: %s in %s with thread %d", message, name, Thread.currentThread().getId()));
+		
+		if (latch.getCount() == 0) {
+			return;
+		}
+		
 		data.getDataBus().publish(MessageData.of(newMessage), this);
 		System.out.println(String.format("Sent message: %s in %s", newMessage, name));
+		
 		
 		latch.countDown();
 		
@@ -73,6 +74,14 @@ public class Player implements Member {
 
 	public void setLatch(CountDownLatch latch) {
 		this.latch = latch;
+	}
+
+	public AtomicInteger getSendCounter() {
+		return sendCounter;
+	}
+
+	public void setSendCounter(AtomicInteger sendCounter) {
+		this.sendCounter = sendCounter;
 	}
 
 
