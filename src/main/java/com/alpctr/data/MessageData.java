@@ -3,6 +3,10 @@ package com.alpctr.data;
 import com.alpctr.players.AbstractDataType;
 import com.alpctr.players.DataType;
 
+/**
+ * An event raised when a string message is sent.
+ *
+ */
 public class MessageData extends AbstractDataType {
 
 	private final String message;

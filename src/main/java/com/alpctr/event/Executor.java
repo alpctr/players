@@ -1,4 +1,4 @@
-package com.alpctr.member;
+package com.alpctr.event;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;

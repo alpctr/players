@@ -7,13 +7,14 @@ import java.util.stream.Collectors;
 
 import com.alpctr.event.Dispatcher;
 
-
+/**
+ * The Data-Bus implementation. Implementation uses a Singleton.
+ *
+ */
 public class DataBus {
 
 	private final Dispatcher dispatcher = new Dispatcher();
 	private static final DataBus INSTANCE = new DataBus();
-
-	//private final Set<Member> listeners = new HashSet<>();
     private final CopyOnWriteArraySet<Member> listeners = new CopyOnWriteArraySet<>();
 
 	public static DataBus getInstance() {
@@ -39,15 +40,16 @@ public class DataBus {
 	}
 
 	/**
-	 * Publish and event to all members.
+	 * Publish and event to specific members.
 	 *
-	 * @param event The event
+	 * @param event The event to be published
+	 * @param sender The sender to be filtered
 	 */
 	public void publish(final DataType event, Member sender) {
 		event.setDataBus(this);
 	    Predicate<Member> predicate = (member) -> member.equals(sender);
 		
-        Set<Member> listeners = this.listeners.stream()
+        Set<Member> listeners = this.listeners.stream()	//filter sender
                 .filter(predicate.negate()::test)
                 .collect(Collectors.toSet());
         

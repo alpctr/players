@@ -7,8 +7,14 @@ import java.util.Queue;
 import com.alpctr.players.DataType;
 import com.alpctr.players.Member;
 
+/**
+ * Dispatcher class queues events that are posted reentrantly on a thread that is already
+ * dispatching an event, guaranteeing that all events posted on a single thread are dispatched to
+ * all subscribers in the order they are posted.
+ */
 public class Dispatcher {
 
+	/** Per-thread queue of events to dispatch. */
 	private final ThreadLocal<Queue<Event>> queue = new ThreadLocal<Queue<Event>>() {
 		@Override
 		protected Queue<Event> initialValue() {
@@ -16,6 +22,7 @@ public class Dispatcher {
 		}
 	};
 
+	/** Per-thread dispatch state, used to avoid reentrant event dispatching. */
 	private final ThreadLocal<Boolean> dispatching = new ThreadLocal<Boolean>() {
 		@Override
 		protected Boolean initialValue() {
@@ -23,9 +30,9 @@ public class Dispatcher {
 		}
 	};
 
-	public void dispatch(DataType event, Iterator<Member> listeners) {
+	public void dispatch(DataType event, Iterator<Member> subscribers) {
 		Queue<Event> queueForThread = queue.get();
-		queueForThread.offer(new Event(event, listeners));
+		queueForThread.offer(new Event(event, subscribers));
 
 		if (!dispatching.get()) {
 			dispatching.set(true);

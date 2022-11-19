@@ -4,7 +4,10 @@ import java.time.LocalDateTime;
 
 import com.alpctr.players.AbstractDataType;
 import com.alpctr.players.DataType;
-
+/**
+ * An event raised when applications starts, containing the start time of the application and a greeting message from initiator.
+ *
+ */
 public class StartingData extends AbstractDataType {
 
 	private final LocalDateTime when;

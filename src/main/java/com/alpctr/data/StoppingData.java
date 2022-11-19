@@ -5,6 +5,10 @@ import java.time.LocalDateTime;
 import com.alpctr.players.AbstractDataType;
 import com.alpctr.players.DataType;
 
+/**
+ * An event raised when applications stops, containing the stop time of the application and a goodbye message from initiator.
+ *
+ */
 public class StoppingData extends AbstractDataType {
 
 	private final LocalDateTime when;
