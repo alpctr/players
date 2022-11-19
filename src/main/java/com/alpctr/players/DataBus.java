@@ -51,11 +51,6 @@ public class DataBus {
                 .filter(predicate.negate()::test)
                 .collect(Collectors.toSet());
         
-        
-        //listeners.iterator().next().accept(event);
-		//listeners.forEach(listener -> listener.accept(event));
-		
-		
 		dispatcher.dispatch(event, listeners.iterator());
 	}
 }
