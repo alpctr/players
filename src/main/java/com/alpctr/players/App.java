@@ -2,10 +2,12 @@ package com.alpctr.players;
 
 import static java.lang.System.exit;
 
+import java.time.LocalDateTime;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
 
 import com.alpctr.data.MessageData;
+import com.alpctr.data.StartingData;
 import com.alpctr.member.Executor;
 import com.alpctr.member.Player;
 
@@ -29,10 +31,13 @@ class App {
 		bus.subscribe(player1);
 		bus.subscribe(player2);
 
-		System.out.println(String.format("Sent message: %s in %s", message, initiator.getName()));
+		player1.send(StartingData.of(LocalDateTime.now(), "Hey! Do you wanna play"), bus);
+		
+		System.out.println("\n");
 		
 		initiator.getSendCounter().incrementAndGet();
-		bus.publish(MessageData.of(message), initiator);
+		initiator.send(MessageData.of(message), bus);
+		System.out.println(String.format("Sent message: %s in %s", message, initiator.getName()));
 		
 		
 		try {
@@ -45,8 +50,11 @@ class App {
 		
 		taskExecutor.shutdown();
 		
+		System.out.println("\n");
+		
+		player1.send(StartingData.of(LocalDateTime.now(), "Nice game..."), bus);
 
-		System.out.println(String.format("Finished"));
+		System.out.println(String.format("Game finished"));
 		exit(0);
 		
 	}
