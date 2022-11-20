@@ -20,7 +20,6 @@ import com.alpctr.players.Member;
 public class Player implements Member {
 
 	private static final int INITIAL_COUNTER_VALUE = 0;
-	private static final int MAX_SEND_COUNT = 10;
 
 	private String name;
 	private CountDownLatch latch;
